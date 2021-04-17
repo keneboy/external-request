@@ -1,22 +1,22 @@
 
 const https = require('https');
+const fs = require('fs');
 const _externalUrl ='https://jsonplaceholder.typicode.com/posts';
+
+let data = '';
 
 const ExternalApiUSingHttp = (callback)=>{
     https.get(_externalUrl, (resp)=>{
-        let data = '';
-
         //A CHUNK OF DATA HAVE BEEN RECEIVED
         resp.on('data', (chunk)=>{
             data+=chunk;
         })
+
         //this data was handled asynchronously...
         resp.on('end', ()=>{
-            return callback(data)
+            fs.writeFile("./result/posts.json", data, (err) => {
+                if (err) throw err;
+            }
         })
-    }).on('error', (err)=>{
-        console.log(`error message: ${err.message}`)
     })
 }
-// the module was exported
-module.exports.callApi = ExternalApiUSingHttp;
